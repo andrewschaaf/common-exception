@@ -108,7 +108,7 @@ catch(e) {
     <tr>
         <td style="text-align: right"># frames</td>
 <!-- Chrome--><td style="text-align: center; background: #C0F5BC;">all</td>
-<!-- Safari--><td style="text-align: center; background: #F6F0A6;">one</td>
+<!-- Safari--><td style="text-align: center; background: #F6F0A6;"><b>one</b></td>
 <!--Firefox--><td style="text-align: center; background: #C0F5BC;">all</td>
 <!--     IE--><td style="text-align: center; background: #FFFFFF;">?</td>
 <!--  Opera--><td style="text-align: center; background: #FFFFFF;">?</td>
@@ -132,8 +132,8 @@ catch(e) {
     <tr>
         <td style="text-align: right">column_number</td>
 <!-- Chrome--><td style="text-align: center; background: #C0F5BC;">yes</td>
-<!-- Safari--><td style="text-align: center; background: #F6F0A6;">via offset</td>
-<!--Firefox--><td style="text-align: center; background: #EAAFAE;">no</td>
+<!-- Safari--><td style="text-align: center; background: #F6F0A6;"><b>via offset</b></td>
+<!--Firefox--><td style="text-align: center; background: #EAAFAE;"><b>no</b></td>
 <!--     IE--><td style="text-align: center; background: #FFFFFF;">?</td>
 <!--  Opera--><td style="text-align: center; background: #FFFFFF;">?</td>
     </tr>
