@@ -24,6 +24,15 @@ All fields are optional, and setting a field to <code>null</code> is considered 
             "line": "...line 100...",
             "lines_before": [..., "...98...", "...99..."],
             "lines_after": ["...101...", ...],
+            "locals": {
+                // Values intended to be human-readable, not machine-readable
+                // Represent values as strings however you see fit, e.g.
+                "i": "1729",
+                "s": "'9000-char unicode gets trunca'...",
+                "s": "b'9000-byte data gets trunca'...",
+                "x": "&lt;__main__.Foo instance at 0x10057e128&gt;",
+                "y": "[1, {2: \"foo\"}]",
+            }
 ...
 </pre>
 
@@ -50,7 +59,7 @@ except Exception:
     ce = common_exception.fromCurrentException()
 </pre>
 
-* TODO: implement this.
+* Note: incomplete implementation not yet posted.
 
 ### Ruby
 
