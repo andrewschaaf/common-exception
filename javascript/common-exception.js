@@ -129,6 +129,8 @@ var _parseLine = function(line) {
 
 var fromNodeException = function(e, opt) {
     
+    var t1 = Date().getTime();
+    
     opt = opt || {};
     
     var stack = null;
@@ -166,6 +168,12 @@ var fromNodeException = function(e, opt) {
         };
     }
     
+    if (opt['build']) {
+        ce['build'] = opt['build'];
+    }
+    
+    ce['ms_to_create'] = Date().getTime() - t1;
+    
     return ce;
 };
 
@@ -187,6 +195,10 @@ var fromBrowserException = function(e, opt) {
         if (referer) {
             ce['environment']['execUrl'] = ce['environment']['url'] || referer;
         }
+    }
+    
+    if (opt['build']) {
+        ce['build'] = opt['build'];
     }
     
     return ce;

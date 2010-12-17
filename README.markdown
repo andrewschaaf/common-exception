@@ -57,7 +57,10 @@ All fields are optional, and setting a field to <code>null</code> is considered 
         "headers": {
             "...": "...",
         }
-    }
+    },
+    "ms_to_create": 5,   // how long it took to create this exception (in the thread where it occurred)
+    "build": "..."       // the identifier of the build that was running
+    // (e.g. to let your exception-server find source file_sha1 for (build, path/url))
 }
 </pre>
 
