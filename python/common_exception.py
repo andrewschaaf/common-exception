@@ -77,10 +77,12 @@ def fromCurrentException():
     
     reversed_frames = []
     while tback is not None:
+        locs = tback.tb_frame.f_locals
         frame = {
             'file_path': tback.tb_frame.f_code.co_filename,
             'scope_name': tback.tb_frame.f_code.co_name,
             'line_number': tback.tb_lineno,
+            'locals': dict((k, shortRepr(locs[k])) for k in locs)
         }
         tback = tback.tb_next
         reversed_frames.append(frame)
@@ -91,6 +93,13 @@ def fromCurrentException():
         'exception': ex,
         'ms_to_create': int(time.time() * 1000) - t1_ms,
     }
+
+
+def shortRepr(x, maxlen=50):
+    s = repr(x)
+    if len(s) > maxlen:
+        s = s[:maxlen - 3] + '...'
+    return s
 
 
 '''
