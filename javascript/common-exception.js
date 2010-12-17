@@ -129,7 +129,7 @@ var _parseLine = function(line) {
 
 var fromNodeException = function(e, opt) {
     
-    var t1 = Date().getTime();
+    var t1 = (new Date()).getTime();
     
     opt = opt || {};
     
@@ -172,7 +172,7 @@ var fromNodeException = function(e, opt) {
         ce['build'] = opt['build'];
     }
     
-    ce['ms_to_create'] = Date().getTime() - t1;
+    ce['ms_to_create'] = (new Date()).getTime() - t1;
     
     return ce;
 };
@@ -183,7 +183,7 @@ var fromBrowserException = function(e, opt) {
     
     var ce = common_exception_fromException(e)
     
-    ce['exception']['at'] = Date().getTime();
+    ce['exception']['at'] = (new Date()).getTime();
     
     if (opt.request) {
         var userAgent = opt.request.headers['user-agent'];
