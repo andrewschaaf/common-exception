@@ -27,10 +27,28 @@ TEXT2 = '''Traceback (most recent call last):
 Exception'''
 
 
-class TestTest(TestCase):
+class TestText(TestCase):
     def runTest(self):
         for text in [TEXT, TEXT2]:
-            print common_exception.fromExceptionText(text)
+            common_exception.fromExceptionText(text)
+
+
+class TestCurrent(TestCase):
+    def runTest(self):
+        try:
+            
+            def g():
+                x = 1
+                raise Exception('OMG NOES')
+            
+            def f():
+                x = 2
+                g()
+            
+            f()
+            
+        except Exception:
+            print common_exception.fromCurrentException()
 
 
 if __name__ == '__main__':
