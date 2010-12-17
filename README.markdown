@@ -77,28 +77,29 @@ and focus on making it awesome, rather than on writing a batallion of parsers.
 
 ## Conversion
 
-<!--
+
 ### Python
 <pre>
 import common_exception
 ...
 ce = common_exception.fromExceptionText(text)
-# -> {"exception":...}
 ...
 except Exception:
-    ce = common_exception.fromCurrentException()
-    # -> {"exception":..., "environment":...}
+    ce = common_exception.fromCurrentException()<!--
 ...
-ce = common_exception.fromCurrentException(djangoRequest=request)
-# -> {"exception":..., "environment":..., "request":...}
+ce = common_exception.fromCurrentException(djangoRequest=request)-->
 </pre>
 
+<!--
 ### Ruby
 
 TODO
 -->
 
 ### JavaScript (NodeJS)
+<pre>
+npm install common-exception
+</pre>
 <pre>
 var common_exception = require('common_exception');
 ...

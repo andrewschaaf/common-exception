@@ -1,5 +1,5 @@
 
-import re, time, sys, warnings, traceback
+import re, time, sys, os, warnings, traceback, json
 
 
 def fromExceptionText(text):
@@ -92,6 +92,15 @@ def fromCurrentException():
     return {
         'exception': ex,
         'ms_to_create': int(time.time() * 1000) - t1_ms,
+        'environment': {
+            'execAgent': 'Python ' + json.dumps(sys.version_info),
+            'execPath': sys.executable,
+            'args': sys.argv,
+            'cwd': os.getcwd(),
+            'pid': os.getpid(),
+            'gid': os.getgid(),
+            'uid': os.getuid(),
+        }
     }
 
 
