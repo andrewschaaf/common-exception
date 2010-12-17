@@ -7,78 +7,109 @@ All fields are optional, and setting a field to <code>null</code> is considered 
 
 <pre>
 {
-    "name": "...",
-    "message": "...",
-    "stack": [
-        {// most recent stack frame first
-            "file_name": "",
-            "file_path": "..."
-            "file_url": "..."
-            "file_sha1": "",        // hex
-            "line_number": 100,     // 1-based
-            "column_number": 23,    // 1-based
-            "byte_offset_start": ,  // #bytes before relevant part
-            "byte_offset": ,        // in [byte_offset_start, byte_offset_end]
-            "byte_offset_end": ,    // byte_offset_start + len(relevant part)
-            "scope_name": "",
-            "line": "...line 100...",
-            "lines_before": [..., "...98...", "...99..."],
-            "lines_after": ["...101...", ...],
-            "locals": {
-                // Values intended to be human-readable, not machine-readable
-                // Represent values as strings however you see fit, e.g.
-                "i": "1729",
-                "s": "'9000-char unicode gets trunca'...",
-                "s": "b'9000-byte data gets trunca'...",
-                "x": "&lt;__main__.Foo instance at 0x10057e128&gt;",
-                "y": "[1, {2: \"foo\"}]",
+    "exception": {
+        "at": 1292528916674, // ms since 1970
+        "name": "...",
+        "message": "...",
+        "stack": [
+            {// most recent stack frame first
+                "file_name": "",
+                "file_path": "...",
+                "file_url": "...",
+                "file_sha1": "",        // hex
+                "line_number": 100,     // 1-based
+                "column_number": 23,    // 1-based
+                "byte_offset_start": ,  // num bytes before relevant part
+                "byte_offset": ,        // in [byte_offset_start, byte_offset_end]
+                "byte_offset_end": ,    // byte_offset_start + len(relevant part)
+                "scope_name": "",
+                "line": "...line 100...",
+                "lines_before": [..., "...98...", "...99..."],
+                "lines_after": ["...101...", ...],
+                "locals": {
+                    // Values intended to be human-readable, not machine-readable
+                    // Represent values as strings however you see fit, e.g.
+                    "i": "1729",
+                    "s": "'long unicode string gets trunca'...",
+                    "s": "b'long byte string gets trunca'...",
+                    "x": "&lt;__main__.Foo instance at 0x10057e128&gt;",
+                    "y": "[1, {2: \"foo\"}]"
+                }
             }
-...
+        ]
+    },
+    "environment": {
+        "execUrl": // e.g. the page on which client-side JS is being run
+        "execAgent": browser user agent, "Python v2.6.1", "NodeJS v0.3.1", ...
+        "execPath": 
+        "args": sys.argv
+        "cwd": "..."
+        "pid": 
+        "gid": 
+        "uid": 
+        "env": {
+            "PATH": "...",
+        }
+    },
+    "request": {
+        "url": "/foo?x=1&amp;y=2",
+        "method": "GET", "POST", ...
+        "headers": {
+            "...": "...",
+        }
+    }
+}
 </pre>
 
 
-This lets powerful open-source exception servers, e.g.
+This lets you write an exception server, like
 
 * [exception-server](https://github.com/andrewschaaf/exception-server)
 
-and JavaScript widgets, e.g.
+or a JavaScript widget, like
 
 * exception-server's ExceptionWidget
 
-focus on including awesome features, rather than a batallion of parsers.
+and focus on making it awesome, rather than on writing a batallion of parsers.
 
-## Integration Overview
+## Conversion
 
+<!--
 ### Python
 <pre>
 import common_exception
 ...
 ce = common_exception.fromExceptionText(text)
+# -> {"exception":...}
 ...
 except Exception:
     ce = common_exception.fromCurrentException()
+    # -> {"exception":..., "environment":...}
+...
+ce = common_exception.fromCurrentException(djangoRequest=request)
+# -> {"exception":..., "environment":..., "request":...}
 </pre>
-
-* Note: incomplete implementation not yet posted.
 
 ### Ruby
 
 TODO
+-->
 
 ### JavaScript (NodeJS)
 <pre>
 var common_exception = require('common_exception');
 ...
-var ce = common_exception.fromBrowserException(e);
-...
 catch(e) {
-    var ce = common_exception.fromNodeException(e);
+    var ce = common_exception.fromNodeException(e[, {"request":request}]);
+...
+var ce = common_exception.fromBrowserException(e[, {"request":request}]);
+// request used for environment.{execAgent,execUrl}
 </pre>
 
 ### JavaScript (Browser)
 
 <pre>
-// Include <a href="https://github.com/andrewschaaf/common-exception/raw/master/javascript/browser-ce.min.js">browser-ce.min.js</a> (667 bytes) in your code's <a href="http://www.slideshare.net/jeresig/building-a-javascript-library/19">wrapper function</a>.
+// Include <a href="https://github.com/andrewschaaf/common-exception/raw/master/javascript/browser-ce.min.js">browser-ce.min.js</a> (678 bytes) in your code's <a href="http://www.slideshare.net/jeresig/building-a-javascript-library/19">wrapper function</a>.
 // It's of the form "var common_exception_fromException=..."
 // so "common_exception_fromException" should minify easily
 // e.g. with <a href="http://code.google.com/closure/compiler/">Closure Compiler</a>'s simple mode

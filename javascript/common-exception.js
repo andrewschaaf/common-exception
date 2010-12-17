@@ -23,7 +23,7 @@ var common_exception_fromException = function(e) {
     var TOPFRAME_NUMKEYS = 5;
     
     
-    var ce = {};
+    var ex = {};
     var stack = [];
     var topFrame = {};
     var includeTopFrame = 0;
@@ -33,12 +33,12 @@ var common_exception_fromException = function(e) {
     
     // Chrome, Safari, Firefox
     if (e['name']) {
-        ce['name'] = e['name'];
+        ex['name'] = e['name'];
     }
     
     // Chrome, Safari, Firefox
     if (e['message']) {
-        ce['message'] = e['message'];
+        ex['message'] = e['message'];
     }
     
     if (e['stack']) {
@@ -59,7 +59,7 @@ var common_exception_fromException = function(e) {
             }
         }
         if (stack.length > 0) {
-            ce['stack'] = stack;
+            ex['stack'] = stack;
         }
     }
     else {
@@ -72,11 +72,13 @@ var common_exception_fromException = function(e) {
             }
         }
         if (includeTopFrame) {
-            ce['stack'] = [topFrame];
+            ex['stack'] = [topFrame];
         }
     }
     
-    return ce;
+    return {
+        'exception': ex
+    };
 };
 
 /* End browser part */
@@ -122,12 +124,12 @@ var _parseLine = function(line) {
         }
     }
     
-    return {
-        'nativeText': line
-    }
+    return {}
 };
 
-var fromNodeException = function(e) {
+var fromNodeException = function(e, opt) {
+    
+    opt = opt || {};
     
     var stack = null;
     if (e['stack']) {
@@ -138,13 +140,59 @@ var fromNodeException = function(e) {
         }
     }
     
-    return {
-        'name': e['name'] || null,
-        'message': e['message'] || null,
-        'stack': stack
+    var ce = {
+        'exception': {
+            'name': e['name'] || null,
+            'message': e['message'] || null,
+            'stack': stack
+        },
+        'environment': {
+            "execAgent": 'NodeJS ' + process.version,
+            "execPath": process.execPath,
+            "args": process.argv,
+            "cwd": process.cwd(),
+            "pid": process.pid,
+            "gid": process.getgid(),
+            "uid": process.getuid()
+        }
+    };
+    
+    if (opt.request) {
+        var req = opt.request;
+        ce['request'] = {
+            'url': req.url,
+            'method': req.method,
+            'headers': req.headers
+        };
     }
+    
+    return ce;
 };
 
+var fromBrowserException = function(e, opt) {
+    
+    opt = opt || {};
+    
+    var ce = common_exception_fromException(e)
+    
+    ce['exception']['at'] = Date().getTime();
+    
+    if (opt.request) {
+        var userAgent = opt.request.headers['user-agent'];
+        var referer = opt.request.headers['referer'];
+        ce['environment'] = ce['environment'] || {};
+        if (userAgent) {
+            ce['environment']['execAgent'] = ce['environment']['execAgent'] || userAgent;
+        }
+        if (referer) {
+            ce['environment']['execUrl'] = ce['environment']['url'] || referer;
+        }
+    }
+    
+    return ce;
+};
+
+
 exports['fromNodeException'] = fromNodeException;
-exports['fromBrowserException'] = common_exception_fromException;
+exports['fromBrowserException'] = fromBrowserException;
 
