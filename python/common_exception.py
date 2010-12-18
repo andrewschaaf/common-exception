@@ -52,7 +52,7 @@ def fromExceptionText(text):
     }
 
 
-def fromCurrentException(build=None):
+def fromCurrentException(build=None, djangoRequest=None):
     
     t1_ms = int(time.time() * 1000)
     
@@ -89,11 +89,26 @@ def fromCurrentException(build=None):
     
     ex['stack'] = list(reversed(reversed_frames))
     
+    
+    if djangoRequest is None:
+        req = None
+    else:
+        # http://docs.djangoproject.com/en/1.2/ref/request-response/
+        # http://docs.djangoproject.com/en/1.1/ref/request-response/
+        # http://docs.djangoproject.com/en/1.0/ref/request-response/
+        # http://www.djangoproject.com/documentation/0.96/request_response/
+        req = {
+            'url': djangoRequest.get_full_path(),
+            'method': djangoRequest.method,
+            'headers': djangoRequest.META,
+        }
+    
     return {
         'build': None,
         'ms_to_create': int(time.time() * 1000) - t1_ms,
         
         'exception': ex,
+        'request': req,
         'environment': {
             'execAgent': 'Python ' + json.dumps(sys.version_info),
             'execPath': sys.executable,

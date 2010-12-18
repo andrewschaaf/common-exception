@@ -85,9 +85,9 @@ import common_exception
 ce = common_exception.fromExceptionText(text)
 ...
 except Exception:
-    ce = common_exception.fromCurrentException()<!--
+    ce = common_exception.fromCurrentException()
 ...
-ce = common_exception.fromCurrentException(djangoRequest=request)-->
+ce = common_exception.fromCurrentException(djangoRequest=request, build=BUILD_TOKEN)
 </pre>
 
 <!--
