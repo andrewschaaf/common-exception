@@ -52,7 +52,7 @@ def fromExceptionText(text):
     }
 
 
-def fromCurrentException():
+def fromCurrentException(build=None):
     
     t1_ms = int(time.time() * 1000)
     
@@ -90,8 +90,10 @@ def fromCurrentException():
     ex['stack'] = list(reversed(reversed_frames))
     
     return {
-        'exception': ex,
+        'build': None,
         'ms_to_create': int(time.time() * 1000) - t1_ms,
+        
+        'exception': ex,
         'environment': {
             'execAgent': 'Python ' + json.dumps(sys.version_info),
             'execPath': sys.executable,
