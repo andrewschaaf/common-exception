@@ -105,6 +105,7 @@ var common_exception = require('common_exception');
 ...
 catch(e) {
     var ce = common_exception.fromNodeException(e[, {"request":request}]);
+    common_exception.addFileHashes(ce, function(){...});
 ...
 var ce = common_exception.fromBrowserException(e[, {"request":request}]);
 // request used for environment.{execAgent,execUrl}

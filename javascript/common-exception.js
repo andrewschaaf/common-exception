@@ -204,7 +204,65 @@ var fromBrowserException = function(e, opt) {
     return ce;
 };
 
+var addFileHashes = function(ce, addFileHashes_callback) {
+    var ex = ce['exception'];
+    if (!(ex && ex['stack'])) {
+        addFileHashes_callback()
+    }
+    else {
+        var crypto = require('crypto');
+        var async = require('async');
+        var fs = require('fs');
+        
+        var path_sha1_map = {};
+        var paths = [];
+        
+        // Find paths
+        for (var i = 0, len = ex['stack'].length; i < len; i++) {
+            var frame = ex['stack'][i];
+            if (frame['file_path']) {
+                path_sha1_map[frame['file_path']] = 0;
+            }
+        }
+        for(var k in path_sha1_map) {
+            if (path_sha1_map.hasOwnProperty(k)) {
+                paths.push(k);
+            }
+        }
+        
+        async.forEachSeries(
+            paths,
+            function(path, callback) {
+                // Find SHA1
+                fs.readFile(
+                    path,
+                    function(err, data) {
+                        if (data && (!err)) {
+                            path_sha1_map[path] = crypto.createHash('sha1').update(data).digest('hex');
+                        }
+                        callback();
+                    }
+                )
+            },
+            function(err) {
+                // Update each frame
+                for (var i = 0, len = ex['stack'].length; i < len; i++) {
+                    var frame = ex['stack'][i];
+                    if (frame['file_path']) {
+                        var sha1 = path_sha1_map[frame['file_path']];
+                        if (sha1) {
+                            frame['file_sha1'] = sha1;
+                        }
+                    }
+                }
+                addFileHashes_callback();
+            }
+        );
+    }
+}
+
 
 exports['fromNodeException'] = fromNodeException;
 exports['fromBrowserException'] = fromBrowserException;
+exports['addFileHashes'] = addFileHashes;
 

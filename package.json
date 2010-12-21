@@ -6,6 +6,10 @@
     "description": "a cross-language standard for representing exceptions",
     "url": "https://github.com/andrewschaaf/common-exception",
     
+    "dependencies": {
+        "async": ">=0.1.7"
+    },
+    
     "author": "Andrew Schaaf <andrew@andrewschaaf.com>",
     "contributors": [],
     
