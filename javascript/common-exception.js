@@ -207,13 +207,16 @@ var fromBrowserException = function(e, opt) {
 var addFileHashes = function(ce, addFileHashes_callback) {
     var ex = ce['exception'];
     if (!(ex && ex['stack'])) {
-        addFileHashes_callback()
+        if (addFileHashes_callback) {
+            addFileHashes_callback({'buffers': []});
+        }
     }
     else {
         var crypto = require('crypto');
         var async = require('async');
         var fs = require('fs');
         
+        var datas = [];
         var path_sha1_map = {};
         var paths = [];
         
@@ -238,6 +241,7 @@ var addFileHashes = function(ce, addFileHashes_callback) {
                     path,
                     function(err, data) {
                         if (data && (!err)) {
+                            datas.push(data);
                             path_sha1_map[path] = crypto.createHash('sha1').update(data).digest('hex');
                         }
                         callback();
@@ -255,7 +259,9 @@ var addFileHashes = function(ce, addFileHashes_callback) {
                         }
                     }
                 }
-                addFileHashes_callback();
+                if (addFileHashes_callback) {
+                    addFileHashes_callback({'buffers': datas});
+                }
             }
         );
     }
